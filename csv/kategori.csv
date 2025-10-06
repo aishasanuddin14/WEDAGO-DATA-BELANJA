@@ -1,11 +1,11 @@
 subcat_code,label,emoji,action_url
-umkm,Produk UMKM,🛍️,action://p/68ca2366a13ed
-fashion,Fashion,👗,https://jgjk.mobi/p/68cbdd550db14
-sembako,Sembako,🥦,https://jgjk.mobi/p/68cbdfdbbe771
-kecantikan,Kecantikan,💄,https://jgjk.mobi/p/68ca23f822b8b
-pertanian,Pertanian,🌾,action://p/68ca251fe2535
-elektronik,Elektronik,🔌,action://p/68ca25084d9fb
-gadget,Gadget,📱,action://p/68ca24f238608
-atk,Toko ATK,✏️,action://p/68ca24d07b0d3
-preloved,Preloved,♻️,action://p/68ca24a2219ce
-peralatan,Peralatan,🛠️,action://p/68ca2534322d3
+umkm,Produk UMKM,🛍️,action://act/nearme/Produk UMKM
+fashion,Fashion,👗,action://act/nearme/Fashion
+sembako,Sembako,🥦,action://act/nearme/Sembako
+kecantikan,Kecantikan,💄,action://act/nearme/Kecantikan
+pertanian,Pertanian,🌾,action://act/nearme/Pertanian
+elektronik,Elektronik,🔌,action://act/nearme/Elektronik
+gadget,Gadget,📱,action://act/nearme/Gadget
+atk,Toko ATK,✏️,action://act/nearme/Toko ATK
+preloved,Preloved,♻️,action://act/nearme/Preloved
+peralatan,Peralatan,🛠️,action://act/nearme/Peralatan
