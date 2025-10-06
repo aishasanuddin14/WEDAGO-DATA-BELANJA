@@ -3,20 +3,29 @@ name: Build CSV from Excel
 on:
   push:
     paths:
-      - "excel/**.xlsx"
-      - "script/**.py"
+      - "excel/**"
+      - "script/**"
+      - "validators/**"
       - ".github/workflows/build-csv.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
-  contents: write   # <- penting supaya bisa git push hasil CSV
+  contents: write      # perlu untuk membuat/commit branch PR
+  pull-requests: write
 
 jobs:
-  build:
+  build_validate_pr:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # perlu untuk diff & PR yang benar
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -24,15 +33,37 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install pandas openpyxl
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas openpyxl
 
-      - name: Run conversion script
+      - name: Run ETL (split excel → csv)
         run: python script/split_excel.py
 
-      - name: Commit and push CSV
+      - name: Validate CSV schema & rules
+        run: python validators/validate_csv.py
+
+      - name: Diff summary
+        id: diff
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add csv/*.csv || true
-          git commit -m "Auto-build CSV from Excel" || echo "No changes to commit"
-          git push
+          git diff --stat > diff.txt || true
+          echo 'changes<<EOF' >> $GITHUB_OUTPUT
+          cat diff.txt >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+      - name: Create / Update PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: bot/data-sync
+          title: "Data sync: CSV from Excel"
+          commit-message: "chore(csv): sync from excel"
+          body: |
+            Auto-sync CSV dari Excel.
+
+            **Diff**
+            ```
+            ${{ steps.diff.outputs.changes }}
+            ```
+          labels: data, automation
+          signoff: true
+          delete-branch: false
